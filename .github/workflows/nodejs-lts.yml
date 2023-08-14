@@ -53,7 +53,7 @@ jobs:
     - name: Release
       uses: ncipollo/release-action@v1
       with:
-        token: ${{ secrets.USER_GITHUB_TOKEN }}
+        token: ${{ secrets.BOT_GITHUB_TOKEN }}
         allowUpdates: true
         name: "nodejs-lts v${{ steps.fetch.outputs.version }}"
         tag: nodejs-lts/${{ steps.fetch.outputs.version }}
