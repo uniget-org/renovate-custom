@@ -1,0 +1,40 @@
+name: nodejs-lts
+
+on:
+  schedule:
+  - ""
+  workflow_dispatch:
+
+concurrency:
+  group: nodejs-lts
+
+jobs:
+
+  fetch:
+    name: Fetch
+    runs-on: ubuntu-22.04
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install uniget
+      uses: uniget-org/uniget-action@main
+      with:
+        prefix: helper
+        tools: gojq
+
+    - name: Fetch
+      run: |
+        MAJOR_VERSION="$(
+            curl --silent --location --fail https://github.com/nodejs/Release/raw/main/schedule.json \
+            | jq -r 'to_entries[] | select(.value.maintenance > (now | todate)) | select(.value.lts != null) | select(.value.lts < (now | todate)) | .key'
+        )"
+        echo "### Found LTS major version ${MAJOR_VERSION}"
+
+        git ls-remote https://github.com/nodejs/node "refs/tags/${MAJOR_VERSION}.*" \
+        | grep -v '\^{}' \
+        | cut -f2 | cut -d/ -f3 | tr -d v \
+        | sort -Vr | head -1

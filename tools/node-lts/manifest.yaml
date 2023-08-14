@@ -1,0 +1,18 @@
+name: nodejs-lts
+version: "18.17.1"
+binary: node
+check: ${binary} --version | tr -d v
+platforms:
+- linux/amd64
+- linux/arm64
+tags:
+- type/cli
+- category/development
+- lang/javascript
+homepage: https://github.com/nodejs/node
+description: Node.js JavaScript runtime
+renovate:
+  datasource: github-releases
+  package: nodejs/node
+  extractVersion: ^v(?<version>.+?)$
+  priority: low
