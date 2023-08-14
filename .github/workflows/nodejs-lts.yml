@@ -32,6 +32,7 @@ jobs:
         tools: gojq
 
     - name: Fetch
+      id: fetch
       run: |
         MAJOR_VERSION="$(
             curl --silent --location --fail https://github.com/nodejs/Release/raw/main/schedule.json \
@@ -39,7 +40,22 @@ jobs:
         )"
         echo "### Found LTS major version ${MAJOR_VERSION}"
 
-        git ls-remote https://github.com/nodejs/node "refs/tags/${MAJOR_VERSION}.*" \
-        | grep -v '\^{}' \
-        | cut -f2 | cut -d/ -f3 | tr -d v \
-        | sort -Vr | head -1
+        VERSION="$(
+            git ls-remote https://github.com/nodejs/node "refs/tags/${MAJOR_VERSION}.*" \
+            | grep -v '\^{}' \
+            | cut -f2 | cut -d/ -f3 | tr -d v \
+            | sort -Vr | head -1
+        )"
+        echo "### Found LTS version ${VERSION}"
+
+        echo "version=${VERSION}" >>${GITHUB_OUTPUT}
+
+    - name: Release
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.BOT_GITHUB_TOKEN }}
+        allowUpdates: true
+        name: "nodejs-lts v${{ steps.fetch.outputs.version }}"
+        tag: ${{ steps.fetch.outputs.tag }}
+        draft: false
+        prerelease: false
