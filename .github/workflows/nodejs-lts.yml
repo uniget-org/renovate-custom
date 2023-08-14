@@ -3,6 +3,11 @@ name: nodejs-lts
 on:
   schedule:
   - cron: "47 3 * * *"
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/node-lts.yml
   workflow_dispatch:
 
 concurrency:
