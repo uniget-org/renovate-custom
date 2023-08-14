@@ -56,6 +56,6 @@ jobs:
         token: ${{ secrets.USER_GITHUB_TOKEN }}
         allowUpdates: true
         name: "nodejs-lts v${{ steps.fetch.outputs.version }}"
-        tag: ${{ steps.fetch.outputs.version }}
+        tag: nodejs-lts/${{ steps.fetch.outputs.version }}
         draft: false
         prerelease: false
