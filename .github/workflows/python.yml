@@ -50,7 +50,7 @@ jobs:
             | head -n 1
         )"
 
-        echo "version=${VERSION}" >>${GITHUB_OUTPUT}
+        echo "version=${VERSION}+${INDYGREG_PYTHON_BUILD_STANDALONE_VERSION}" >>${GITHUB_OUTPUT}
 
     - name: Release
       uses: ncipollo/release-action@v1
