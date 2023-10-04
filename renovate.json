@@ -3,5 +3,15 @@
   "extends": [
     "config:base",
     "regexManagers:githubActionsVersions"
+  ],
+  "packageRules": [
+    {
+      "matchDatasources": [ "github-actions" ],
+      "automerge": true
+    },
+    {
+      "matchPackageNames": [ "indygreg/python-build-standalone" ],
+      "automerge": true
+    }
   ]
 }
