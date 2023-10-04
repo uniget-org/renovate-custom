@@ -11,6 +11,7 @@
     },
     {
       "matchPackageNames": [ "indygreg/python-build-standalone" ],
+      "ignoreTests": true,
       "automerge": true
     }
   ]
