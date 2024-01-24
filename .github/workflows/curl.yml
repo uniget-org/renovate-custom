@@ -1,0 +1,67 @@
+name: curl
+
+on:
+  schedule:
+  - cron: "47 3 * * *"
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/curl.yml
+  workflow_dispatch:
+
+concurrency:
+  group: curl
+
+env:
+  # renovate: datasource=github-tags depName=curl/curl
+  CURL_VERSION: "1.2.3"
+
+jobs:
+
+  fetch:
+    name: Fetch
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install uniget
+      uses: uniget-org/uniget-action@main
+      with:
+        prefix: helper
+        tools: gojq
+
+    - name: Fetch
+      id: fetch
+      run: |
+        MAJOR_VERSION="$(
+            curl --silent --location --fail https://github.com/nodejs/Release/raw/main/schedule.json \
+            | jq -r 'to_entries[] | select(.value.maintenance > (now | todate)) | select(.value.lts != null) | select(.value.lts < (now | todate)) | .key'
+        )"
+        echo "### Found LTS major version ${MAJOR_VERSION}"
+
+        VERSION="$(
+            git ls-remote https://github.com/nodejs/node "refs/tags/${MAJOR_VERSION}.*" \
+            | grep -v '\^{}' \
+            | cut -f2 | cut -d/ -f3 | tr -d v \
+            | sort -Vr | head -1
+        )"
+        echo "### Found LTS version ${VERSION}"
+
+        echo "version=${VERSION}" >>${GITHUB_OUTPUT}
+
+    - name: Release
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.BOT_GITHUB_TOKEN }}
+        allowUpdates: true
+        name: "curl v${{ steps.fetch.outputs.version }}"
+        tag: curl/${{ steps.fetch.outputs.version }}
+        draft: false
+        prerelease: false

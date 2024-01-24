@@ -4,6 +4,22 @@
     "config:base",
     "regexManagers:githubActionsVersions"
   ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        ".github/workflows/curl.yml"
+      ],
+      "matchStrings":       [
+        "# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?)(?: (lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?\\s.+?_VERSION[ =]\"?(?<currentValue>.+?)\"?\\s"
+      ],
+      "datasourceTemplate":   "docker",
+      "depNameTemplate":      "docker/dockerfile"
+    },
+    {
+      "customType": "regex"
+    }
+  ],
   "packageRules": [
     {
       "matchDatasources": [ "github-actions" ],
