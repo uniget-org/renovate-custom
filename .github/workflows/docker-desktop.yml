@@ -125,7 +125,7 @@ jobs:
     - name: Install tool
       run: |
         cat ./helper/usr/local/bin/install-docker-debug.sh
-        VERSION="{{ needs.desktop.outputs.version }}" ./helper/usr/local/bin/install-docker-debug.sh .
+        VERSION="{{ needs.desktop.outputs.version }}" bash -x -e ./helper/usr/local/bin/install-docker-debug.sh .
         find . -type f
 
     - name: Fetch version
