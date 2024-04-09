@@ -1,0 +1,56 @@
+name: docker-desktop
+
+on:
+  schedule:
+  - cron: "47 3 * * *"
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/docker-desktop.yml
+  workflow_dispatch:
+
+concurrency:
+  group: docker-desktop
+
+jobs:
+
+  fetch:
+    name: Fetch
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install uniget
+      uses: uniget-org/uniget-action@main
+      with:
+        prefix: helper
+        tools: gojq
+
+    - name: Fetch
+      id: fetch
+      run: |
+        VERSION="$(
+            curl --silent --show-error --location --fail "https://github.com/docker/docs/raw/main/content/desktop/release-notes.md" \
+            | grep '{{< desktop-install ' \
+            | head -n 1 \
+            | sed -E 's/^.+version="([^"]+)".+$/\1/'
+        )"
+
+        echo "version=${VERSION}" >>${GITHUB_OUTPUT}
+
+    - name: Release
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.BOT_GITHUB_TOKEN }}
+        allowUpdates: true
+        name: "docker-desktop v${{ steps.fetch.outputs.version }}"
+        tag: docker-desktop/${{ steps.fetch.outputs.version }}
+        draft: false
+        prerelease: false
