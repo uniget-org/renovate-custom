@@ -158,7 +158,7 @@ jobs:
 
     - name: Install tool
       run: |
-        docker_desktop_version="{{ needs.desktop.outputs.version }}" bash -x -e ./helper/usr/local/bin/install-docker-debug.sh .
+        docker_desktop_version="${{ needs.desktop.outputs.version }}" bash -x -e ./helper/usr/local/bin/install-docker-debug.sh .
 
     - name: Fetch version
       id: fetch
