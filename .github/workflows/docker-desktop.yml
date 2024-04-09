@@ -86,7 +86,7 @@ jobs:
         VERSION="$(
             ./libexec/docker/cli-plugins/docker-init init --version \
             | grep ^Version \
-            | cut -d' ' -f2
+            | cut -dv -f2
         )"
         echo "Got version ${VERSION}"
         echo "version=${VERSION}" >>${GITHUB_OUTPUT}
