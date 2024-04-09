@@ -154,10 +154,10 @@ jobs:
         tar --extract --xz --file "${TEMP_DIR}/data.tar.xz" --directory "${target}/libexec/" --strip-components=3 --no-same-owner \
             ./usr/lib/docker/cli-plugins/docker-debug
         EOF
+        cat ./helper/usr/local/bin/install-docker-debug.sh
 
     - name: Install tool
       run: |
-        cat ./helper/usr/local/bin/install-docker-debug.sh
         docker_desktop_version="{{ needs.desktop.outputs.version }}" bash -x -e ./helper/usr/local/bin/install-docker-debug.sh .
 
     - name: Fetch version
