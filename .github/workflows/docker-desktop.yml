@@ -124,6 +124,7 @@ jobs:
 
     - name: Overwrite script
       run: |
+        find . -type f
         cat <<"EOF" >./helper/usr/local/bin/install-docker-debug.sh
         #!/bin/bash
         set -o errexit -o pipefail
