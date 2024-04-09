@@ -51,7 +51,7 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         token: ${{ secrets.BOT_GITHUB_TOKEN }}
-        allowUpdates: true
+        allowUpdates: false
         name: "docker-desktop v${{ steps.fetch.outputs.version }}"
         tag: docker-desktop/${{ steps.fetch.outputs.version }}
         draft: false
@@ -124,7 +124,7 @@ jobs:
 
     - name: Overwrite script
       run: |
-        cat <<EOF >./helper/usr/local/bin/install-docker-debug.sh
+        cat <<"EOF" >./helper/usr/local/bin/install-docker-debug.sh
         #!/bin/bash
         set -o errexit -o pipefail
 
@@ -157,7 +157,6 @@ jobs:
 
     - name: Install tool
       run: |
-        cat ./helper/usr/local/bin/install-docker-debug.sh
         docker_desktop_version="{{ needs.desktop.outputs.version }}" bash -x -e ./helper/usr/local/bin/install-docker-debug.sh .
         find . -type f
 
