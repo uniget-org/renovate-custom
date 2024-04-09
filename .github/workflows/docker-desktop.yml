@@ -78,7 +78,7 @@ jobs:
 
     - name: Install tool
       run: |
-        VERSION="{{ needs.desktop.outputs.version }}" ../helper/usr/local/bin/install-docker-init.sh .
+        VERSION="{{ needs.desktop.outputs.version }}" ./helper/usr/local/bin/install-docker-init.sh .
 
     - name: Fetch version
       id: fetch
@@ -124,6 +124,7 @@ jobs:
 
     - name: Install tool
       run: |
+        cat ./helper/usr/local/bin/install-docker-debug.sh
         VERSION="{{ needs.desktop.outputs.version }}" ./helper/usr/local/bin/install-docker-debug.sh .
         find . -type f
 
