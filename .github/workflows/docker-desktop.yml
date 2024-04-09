@@ -124,6 +124,7 @@ jobs:
 
     - name: Install tool
       run: |
+        find . -type f
         VERSION="{{ needs.desktop.outputs.version }}" ./helper/bin/install-docker-debug.sh
 
     - name: Fetch version
