@@ -84,7 +84,7 @@ jobs:
       id: fetch
       run: |
         VERSION="$(
-            /usr/local/libexec/docker/cli-plugins/docker-init debug --version \
+            ./libexec/docker/cli-plugins/docker-init debug --version \
             | grep ^Version \
             | cut -d' ' -f2
         )"
@@ -125,12 +125,13 @@ jobs:
     - name: Install tool
       run: |
         VERSION="{{ needs.desktop.outputs.version }}" ./helper/usr/local/bin/install-docker-debug.sh .
+        find . -type f
 
     - name: Fetch version
       id: fetch
       run: |
         VERSION="$(
-            /usr/local/libexec/docker/cli-plugins/docker-debug debug --version \
+            ./libexec/docker/cli-plugins/docker-debug debug --version \
             | grep ^Version \
             | cut -d' ' -f2
         )"
