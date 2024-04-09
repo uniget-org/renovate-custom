@@ -157,6 +157,7 @@ jobs:
 
     - name: Install tool
       run: |
+        cat ./helper/usr/local/bin/install-docker-init.sh
         docker_desktop_version="{{ needs.desktop.outputs.version }}" bash -x -e ./helper/usr/local/bin/install-docker-debug.sh .
         find . -type f
 
