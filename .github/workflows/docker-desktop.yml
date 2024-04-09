@@ -88,6 +88,10 @@ jobs:
             | grep ^Version \
             | cut -dv -f2
         )"
+        if test -z "${VERSION}"; then
+            echo "Unable to get version" >&2
+            exit 1
+        fi
         echo "Got version ${VERSION}"
         echo "version=${VERSION}" >>${GITHUB_OUTPUT}
 
@@ -134,6 +138,10 @@ jobs:
             | grep ^Version \
             | cut -d' ' -f2
         )"
+        if test -z "${VERSION}"; then
+            echo "Unable to get version" >&2
+            exit 1
+        fi
         echo "Got version ${VERSION}"
         echo "version=${VERSION}" >>${GITHUB_OUTPUT}
 
