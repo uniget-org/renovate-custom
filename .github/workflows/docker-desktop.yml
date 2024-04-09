@@ -84,9 +84,9 @@ jobs:
       id: fetch
       run: |
         VERSION="$(
-            ./libexec/docker/cli-plugins/docker-init debug --version \
+            ./libexec/docker/cli-plugins/docker-init init --version \
             | grep ^Version \
-            | cut -d' ' -f2
+            | cut -dv -f2
         )"
 
         echo "version=${VERSION}" >>${GITHUB_OUTPUT}
