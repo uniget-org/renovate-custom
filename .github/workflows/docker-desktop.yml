@@ -15,11 +15,13 @@ concurrency:
 
 jobs:
 
-  fetch:
-    name: Fetch
+  desktop:
+    name: docker-desktop
     runs-on: ubuntu-22.04
     permissions:
       contents: write
+    outputs:
+      version: ${{ steps.fetch.outputs.version }}
     steps:
 
     - name: Checkout code
@@ -54,3 +56,95 @@ jobs:
         tag: docker-desktop/${{ steps.fetch.outputs.version }}
         draft: false
         prerelease: false
+
+  init:
+    name: docker-init
+    needs: desktop
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install uniget
+      uses: uniget-org/uniget-action@main
+      with:
+        prefix: helper
+        tools: docker-init
+
+    - name: Install tool
+      run: |
+        VERSION="{{ needs.desktop.outputs.version }}" /usr/local/bin/install-docker-init.sh
+
+    - name: Fetch version
+      id: fetch
+      run: |
+        VERSION="$(
+            /usr/local/libexec/docker/cli-plugins/docker-init debug --version \
+            | grep ^Version \
+            | cut -d' ' -f2
+        )"
+
+        echo "version=${VERSION}" >>${GITHUB_OUTPUT}
+
+    - name: Release
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.BOT_GITHUB_TOKEN }}
+        allowUpdates: true
+        name: "docker-init v${{ steps.fetch.outputs.version }}"
+        tag: docker-init/${{ steps.fetch.outputs.version }}
+        draft: false
+        prerelease: false
+        body: |
+          docker-desktop@${{ needs.desktop.outputs.version }}
+
+  debug:
+    name: docker-debug
+    needs: desktop
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install uniget
+      uses: uniget-org/uniget-action@main
+      with:
+        prefix: helper
+        tools: docker-debug
+
+    - name: Install tool
+      run: |
+        VERSION="{{ needs.desktop.outputs.version }}" /usr/local/bin/install-docker-debug.sh
+
+    - name: Fetch version
+      id: fetch
+      run: |
+        VERSION="$(
+            /usr/local/libexec/docker/cli-plugins/docker-debug debug --version \
+            | grep ^Version \
+            | cut -d' ' -f2
+        )"
+
+        echo "version=${VERSION}" >>${GITHUB_OUTPUT}
+
+    - name: Release
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.BOT_GITHUB_TOKEN }}
+        allowUpdates: true
+        name: "docker-debug v${{ steps.fetch.outputs.version }}"
+        tag: docker-debug/${{ steps.fetch.outputs.version }}
+        draft: false
+        prerelease: false
+        body: |
+          docker-desktop@${{ needs.desktop.outputs.version }}
