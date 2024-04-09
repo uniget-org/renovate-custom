@@ -124,7 +124,6 @@ jobs:
 
     - name: Overwrite script
       run: |
-        find . -type f
         cat <<"EOF" >./helper/usr/local/bin/install-docker-debug.sh
         #!/bin/bash
         set -o errexit -o pipefail
@@ -158,9 +157,8 @@ jobs:
 
     - name: Install tool
       run: |
-        cat ./helper/usr/local/bin/install-docker-init.sh
+        cat ./helper/usr/local/bin/install-docker-debug.sh
         docker_desktop_version="{{ needs.desktop.outputs.version }}" bash -x -e ./helper/usr/local/bin/install-docker-debug.sh .
-        find . -type f
 
     - name: Fetch version
       id: fetch
