@@ -40,7 +40,7 @@ jobs:
       run: |
         VERSION="$(
             curl --silent --show-error --location --fail "https://github.com/docker/docs/raw/main/content/desktop/release-notes.md" \
-            | grep '{{< desktop-install ' \
+            | grep '{{< desktop-install all=true' \
             | head -n 1 \
             | sed -E 's/^.+version="([^"]+)".+$/\1/'
         )"
