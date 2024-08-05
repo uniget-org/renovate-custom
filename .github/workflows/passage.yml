@@ -32,8 +32,20 @@ jobs:
       run: |
         git clone https://github.com/FiloSottile/passage
         cd passage
+
         VERSION="$(git rev-list --count --all)"
+        if test -z "${VERSION}"; then
+            echo "Failed to count commits"
+            exit 1
+        fi
+
         COMMIT="$(git rev-parse --short HEAD)"
+        if test -z "${COMMIT}"; then
+            echo "Failed to get short commit hash"
+            exit 1
+        fi
+        
+        echo "Got version <${VERSION}.${COMMIT}>"
 
         echo "version=${VERSION}.${COMMIT}" >>${GITHUB_OUTPUT}
 
