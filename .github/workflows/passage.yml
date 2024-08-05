@@ -31,6 +31,7 @@ jobs:
       id: fetch
       run: |
         git clone https://github.com/FiloSottile/passage
+        cd passage
         VERSION="$(git rev-list --count --all)"
         COMMIT="$(git rev-parse --short HEAD)"
 
