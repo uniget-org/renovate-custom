@@ -44,6 +44,11 @@ jobs:
             | head -n 1 \
             | sed -E 's/^.+version="([^"]+)".+$/\1/'
         )"
+        if test -z "${VERSION}"; then
+            echo "Failed to fetch latest tag and extract version from GitHub"
+            exit 1
+        fi
+        echo "Got version <${VERSION}>"
 
         echo "version=${VERSION}" >>${GITHUB_OUTPUT}
 

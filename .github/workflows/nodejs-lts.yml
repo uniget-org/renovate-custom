@@ -40,6 +40,10 @@ jobs:
             curl --silent --location --fail https://github.com/nodejs/Release/raw/main/schedule.json \
             | jq -r 'to_entries[] | select(.value.maintenance > (now | todate)) | select(.value.lts != null) | select(.value.lts < (now | todate)) | .key'
         )"
+        if test -z "${MAJOR_VERSION}"; then
+            echo "Failed to fetch latest tag and extract major version from release schedule"
+            exit 1
+        fi
         echo "### Found LTS major version ${MAJOR_VERSION}"
 
         VERSION="$(
@@ -48,6 +52,10 @@ jobs:
             | cut -f2 | cut -d/ -f3 | tr -d v \
             | sort -Vr | head -1
         )"
+        if test -z "${VERSION}"; then
+            echo "Failed to fetch tag and extract version from GitHub"
+            exit 1
+        fi
         echo "### Found LTS version ${VERSION}"
 
         echo "version=${VERSION}" >>${GITHUB_OUTPUT}
