@@ -37,7 +37,7 @@ jobs:
       id: fetch
       env:
         # renovate: datasource=github-releases depName=indygreg/python-build-standalone versioning=loose
-        INDYGREG_PYTHON_BUILD_STANDALONE_VERSION: 20240726
+        INDYGREG_PYTHON_BUILD_STANDALONE_VERSION: 20240814
       run: |
         # Find cpython-${PYTHON_VERSION}+${version}-${arch}-unknown-linux-musl-install_only.tar.gz
         VERSION="$(
