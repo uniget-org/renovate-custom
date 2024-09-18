@@ -46,7 +46,8 @@ jobs:
         VERSION="$(
             curl --silent --show-error --location --fail \
                 --url "https://api.github.com/repos/adoptium/temurin${MAJOR_VERSION}-binaries/releases/latest" \
-            | jq --raw-output '.tag_name'
+            | jq --raw-output '.tag_name' \
+            | sed 's/^jdk-//'
         )"
         echo "### Found version ${VERSION}"
 
