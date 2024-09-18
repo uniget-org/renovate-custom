@@ -41,12 +41,14 @@ jobs:
                 --url "https://api.adoptium.net/v3/info/available_releases" \
             | jq --raw-output '.available_releases | max'
         )"
+        echo "### Found major version ${MAJOR_VERSION}"
 
         VERSION="$(
             curl --silent --show-error --location --fail \
                 --url "https://api.github.com/repos/adoptium/temurin${MAJOR_VERSION}-binaries/releases/latest" \
             | jq --raw-output '.tag_name'
         )"
+        echo "### Found version ${VERSION}"
 
         echo "version=${VERSION}" >>${GITHUB_OUTPUT}
 
