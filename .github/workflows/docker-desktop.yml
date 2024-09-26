@@ -17,7 +17,7 @@ jobs:
 
   desktop:
     name: docker-desktop
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     outputs:
@@ -65,7 +65,7 @@ jobs:
   init:
     name: docker-init
     needs: desktop
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
@@ -115,7 +115,7 @@ jobs:
   debug:
     name: docker-debug
     needs: desktop
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
