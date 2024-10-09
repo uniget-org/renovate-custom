@@ -7,7 +7,7 @@ on:
     branches:
     - main
     paths:
-    - .github/workflows/python.yml
+    - .github/workflows/python-3.12.yml
   workflow_dispatch:
 
 concurrency:
@@ -63,7 +63,7 @@ jobs:
       with:
         token: ${{ secrets.BOT_GITHUB_TOKEN }}
         allowUpdates: true
-        name: "python v${{ steps.fetch.outputs.version }}"
-        tag: python/${{ steps.fetch.outputs.version }}
+        name: "python-3.12 v${{ steps.fetch.outputs.version }}"
+        tag: python-3.12/${{ steps.fetch.outputs.version }}
         draft: false
         prerelease: false
