@@ -20,7 +20,7 @@ docker-desktop-check:
     fi
     echo "Got version <${VERSION}>"
 
-    echo "version=${VERSION}" >>variables.env
+    echo "VERSION=${VERSION}" >>variables.env
   artifacts:
     reports:
       dotenv: variables.env
