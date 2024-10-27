@@ -7,7 +7,6 @@ docker-desktop:
   extends:
   - .uniget-install
   variables:
-    uniget_prefix: helper
     uniget_tools: gojq release-cli
   image: registry.gitlab.com/uniget-org/images/ubuntu:rolling
   script:
