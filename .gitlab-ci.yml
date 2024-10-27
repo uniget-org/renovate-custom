@@ -1,18 +1,15 @@
-include:
-- project: uniget-org/templates
-  file: uniget.yaml
-  ref: main
+#include:
+#- project: uniget-org/templates
+#  file: uniget.yaml
+#  ref: main
 
-docker-desktop:
-  extends:
-  - .uniget-install
-  variables:
-    uniget_tools: gojq release-cli
+docker-desktop-check:
   image: registry.gitlab.com/uniget-org/images/ubuntu:rolling
   script:
   - |
     VERSION="$(
-        curl --silent --show-error --location --fail "https://github.com/docker/docs/raw/main/content/manuals/desktop/release-notes.md" \
+        curl --silent --show-error --location --fail \
+            "https://github.com/docker/docs/raw/main/content/manuals/desktop/release-notes.md" \
         | grep '{{< desktop-install all=true' \
         | head -n 1 \
         | sed -E 's/^.+version="([^"]+)".+$/\1/'
@@ -22,6 +19,16 @@ docker-desktop:
         exit 1
     fi
     echo "Got version <${VERSION}>"
+
+    echo "version=${VERSION}" >>variables.env
+  artifacts:
+    reports:
+      dotenv: variables.env
+
+docker-desktop-release:
+  needs:
+  - docker-desktop-check
+  image: registry.gitlab.com/gitlab-org/release-cli:v0.19.0
   release:
     ref: $CI_COMMIT_SHA
     tag_name: docker-desktop/${VERSION}
