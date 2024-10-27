@@ -27,6 +27,10 @@ docker-desktop-release:
   script:
   - |
     echo "### Releasing docker-desktop v${VERSION}"
+    if release-cli get --tag-name docker-desktop/${VERSION}; then
+        echo "    Already exists"
+        exit 0
+    fi
   release:
     ref: $CI_COMMIT_SHA
     tag_name: docker-desktop/${VERSION}
