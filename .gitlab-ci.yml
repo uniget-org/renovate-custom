@@ -8,8 +8,8 @@ docker-desktop:
   - .uniget-install
   variables:
     uniget_prefix: helper
-    uniget_tools: gojq
-  image: registry.gitlab.com/gitlab-org/release-cli:v0.19.0
+    uniget_tools: gojq release-cli
+  image: registry.gitlab.com/uniget-org/images/ubuntu:rolling
   script:
   - |
     VERSION="$(
@@ -23,8 +23,6 @@ docker-desktop:
         exit 1
     fi
     echo "Got version <${VERSION}>"
-
-    echo "version=${VERSION}" >>${GITHUB_OUTPUT}
   release:
     ref: $CI_COMMIT_SHA
     tag_name: docker-desktop/${VERSION}
