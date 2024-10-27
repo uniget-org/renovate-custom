@@ -30,9 +30,11 @@ docker-desktop-release:
     if release-cli get --tag-name docker-desktop/${VERSION}; then
         echo "    Already exists"
         exit 0
+
+    else
+        release-cli create \
+            --name "docker-desktop v${VERSION}" \
+              --description "Custom release of docker-desktop v${VERSION}" \
+              --tag-name "docker-desktop/${VERSION}" \
+              --ref "${CI_COMMIT_SHA}"
     fi
-  release:
-    ref: $CI_COMMIT_SHA
-    tag_name: docker-desktop/${VERSION}
-    name: docker-desktop v${VERSION}
-    description: "Custom release of docker-desktop v${VERSION}"
