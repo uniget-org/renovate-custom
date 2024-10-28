@@ -1,0 +1,49 @@
+nodejs-lts-check:
+  image: registry.gitlab.com/uniget-org/images/ubuntu:rolling
+  script:
+  - |
+    MAJOR_VERSION="$(
+        curl --silent --location --fail https://github.com/nodejs/Release/raw/main/schedule.json \
+        | jq -r 'to_entries[] | select(.value.maintenance > (now | todate)) | select(.value.lts != null) | select(.value.lts < (now | todate)) | .key'
+    )"
+    if test -z "${MAJOR_VERSION}"; then
+        echo "Failed to fetch latest tag and extract major version from release schedule"
+        exit 1
+    fi
+    echo "### Found LTS major version ${MAJOR_VERSION}"
+
+    VERSION="$(
+        git ls-remote https://github.com/nodejs/node "refs/tags/${MAJOR_VERSION}.*" \
+        | grep -v '\^{}' \
+        | cut -f2 | cut -d/ -f3 | tr -d v \
+        | sort -Vr | head -1
+    )"
+    if test -z "${VERSION}"; then
+        echo "Failed to fetch tag and extract version from GitHub"
+        exit 1
+    fi
+    echo "### Found LTS version ${VERSION}"
+
+    echo "version=${VERSION}" >>variables.env
+  artifacts:
+    reports:
+      dotenv: variables.env
+
+nodejs-lts-release:
+  needs:
+  - nodejs-lts-check
+  image: registry.gitlab.com/gitlab-org/release-cli:v0.19.0
+  script:
+  - |
+    echo "### Releasing nodejs-lts v${VERSION}"
+    if release-cli get --tag-name nodejs-lts/${VERSION}; then
+        echo "    Already exists"
+        exit 0
+
+    else
+        release-cli create \
+            --name "nodejs-lts v${VERSION}" \
+              --description "Custom release of nodejs-lts v${VERSION}" \
+              --tag-name "nodejs-lts/${VERSION}" \
+              --ref "${CI_COMMIT_SHA}"
+    fi

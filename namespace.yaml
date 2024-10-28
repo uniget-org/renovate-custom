@@ -1,0 +1,38 @@
+namespace-check:
+  image: registry.gitlab.com/uniget-org/images/ubuntu:rolling
+  script:
+  - |
+    VERSION="$(
+        curl --silent --show-error --location --fail https://github.com/namespacelabs/homebrew-namespace/raw/main/nsc.rb \
+        | grep version \
+        | cut -d'"' -f2
+    )"
+    if test -z "${VERSION}"; then
+        echo "Failed to fetch latest tag and extract version from GitHub"
+        exit 1
+    fi
+    echo "Got version <${VERSION}>"
+
+    echo "version=${VERSION}" >>variables.env
+  artifacts:
+    reports:
+      dotenv: variables.env
+
+namespace-release:
+  needs:
+  - namespace-check
+  image: registry.gitlab.com/gitlab-org/release-cli:v0.19.0
+  script:
+  - |
+    echo "### Releasing namespace v${VERSION}"
+    if release-cli get --tag-name namespace/${VERSION}; then
+        echo "    Already exists"
+        exit 0
+
+    else
+        release-cli create \
+            --name "namespace v${VERSION}" \
+              --description "Custom release of namespace v${VERSION}" \
+              --tag-name "namespace/${VERSION}" \
+              --ref "${CI_COMMIT_SHA}"
+    fi

@@ -2,13 +2,10 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base",
-    "regexManagers:githubActionsVersions"
+    "regexManagers:githubActionsVersions",
+    "customManagers:gitlabPipelineVersions"
   ],
   "packageRules": [
-    {
-      "matchDatasources": [ "github-actions" ],
-      "automerge": true
-    },
     {
       "matchPackageNames": [ "indygreg/python-build-standalone" ],
       "ignoreTests": true,
