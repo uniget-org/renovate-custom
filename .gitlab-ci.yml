@@ -3,3 +3,12 @@ include:
 #  file: uniget.yaml
 #  ref: main
 - local: docker-desktop.yaml
+- local: k3s.yaml
+- local: libgmp.yaml
+- local: namespace.yaml
+- local: nodejs-lts.yaml
+- local: openjdk.yaml
+- local: passage.yaml
+- local: python.yaml
+- local: python-3.12.yaml
+- local: rke2.yaml
