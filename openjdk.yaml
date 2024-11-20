@@ -1,0 +1,43 @@
+openjdk-check:
+  image: registry.gitlab.com/uniget-org/images/ubuntu:rolling
+  script:
+  - |
+    MAJOR_VERSION="$(
+        curl --silent --show-error --location --fail \
+            --url "https://api.adoptium.net/v3/info/available_releases" \
+        | jq --raw-output '.available_releases | max'
+    )"
+    echo "### Found major version ${MAJOR_VERSION}"
+
+    VERSION="$(
+        curl --silent --show-error --location --fail \
+            --url "https://api.github.com/repos/adoptium/temurin${MAJOR_VERSION}-binaries/releases/latest" \
+        | jq --raw-output '.tag_name' \
+        | sed 's/^jdk-//' \
+        | sed -E 's/^([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+)\+([[:digit:]]+)$/\1-\2/'
+    )"
+    echo "Got version <${VERSION}>"
+
+    echo "version=${VERSION}" >>variables.env
+  artifacts:
+    reports:
+      dotenv: variables.env
+
+openjdk-release:
+  needs:
+  - openjdk-check
+  image: registry.gitlab.com/gitlab-org/release-cli:v0.19.0
+  script:
+  - |
+    echo "### Releasing openjdk v${VERSION}"
+    if release-cli get --tag-name openjdk/${VERSION}; then
+        echo "    Already exists"
+        exit 0
+
+    else
+        release-cli create \
+            --name "openjdk v${VERSION}" \
+              --description "Custom release of openjdk v${VERSION}" \
+              --tag-name "openjdk/${VERSION}" \
+              --ref "${CI_COMMIT_SHA}"
+    fi
