@@ -1,18 +1,26 @@
-include:
+#include:
 #- project: uniget-org/templates
 #  file: uniget.yaml
 #  ref: main
-- local: docker-desktop.yaml
-- local: k3s.yaml
-- local: libgmp.yaml
-- local: namespace.yaml
-- local: nodejs-lts.yaml
-- local: openjdk.yaml
-- local: passage.yaml
-- local: python.yaml
-- local: python-3.12.yaml
-- local: rke2.yaml
+#- local: docker-desktop.yaml
+#- local: k3s.yaml
+#- local: libgmp.yaml
+#- local: namespace.yaml
+#- local: nodejs-lts.yaml
+#- local: openjdk.yaml
+#- local: passage.yaml
+#- local: python.yaml
+#- local: python-3.12.yaml
+#- local: rke2.yaml
 
 workflow:
   rules:
   - if: $CI_PIPELINE_SOURCE == "push"
+
+passage:
+  rules:
+  - changes:
+    - passage.yaml
+  trigger:
+    include:
+    - local: passage.yaml
