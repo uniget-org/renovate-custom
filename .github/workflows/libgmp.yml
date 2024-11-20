@@ -1,0 +1,71 @@
+name: libgmp
+
+on:
+  schedule:
+  - cron: "47 3 * * *"
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/libgmp.yml
+  workflow_dispatch:
+
+concurrency:
+  group: libgmp
+
+jobs:
+
+  fetch:
+    name: Fetch
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install uniget
+      uses: uniget-org/uniget-action@main
+      with:
+        prefix: helper
+        tools: gojq
+
+    - name: Prepare
+      run: |
+        apt-get update
+        apt-get -y install \
+            libxml2-utils
+
+    - name: Fetch
+      id: fetch
+      run: |
+        VERSION="$(
+            curl -sSLf https://ftp.gnu.org/gnu/gmp/ \
+            | xmllint -html --xpath "//a/@href" - \
+            | cut -d= -f2 \
+            | tr -d '"' \
+            | grep '.xz$' \
+            | sed -E 's/^gmp-(.+)\.tar\.xz$/\1/' \
+            | sort -Vr \
+            | head -n 1
+        )"
+        if test -z "${VERSION}"; then
+            echo "Failed to fetch latest tag and extract version from GitHub"
+            exit 1
+        fi
+        echo "Got version <${VERSION}>"
+
+        echo "version=${VERSION}" >>${GITHUB_OUTPUT}
+
+    - name: Release
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.BOT_GITHUB_TOKEN }}
+        allowUpdates: true
+        name: "libgmp v${{ steps.fetch.outputs.version }}"
+        tag: libgmp/${{ steps.fetch.outputs.version }}
+        draft: false
+        prerelease: false

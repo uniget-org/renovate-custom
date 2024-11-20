@@ -1,0 +1,48 @@
+libgmp-check:
+  image: registry.gitlab.com/uniget-org/images/ubuntu:rolling
+  before_script:
+  - |
+    apt-get update
+    apt-get -y install \
+        libxml2-utils
+  script:
+  - |
+    VERSION="$(
+        curl -sSLf https://ftp.gnu.org/gnu/gmp/ \
+        | xmllint -html --xpath "//a/@href" - \
+        | cut -d= -f2 \
+        | tr -d '"' \
+        | grep '.xz$' \
+        | sed -E 's/^gmp-(.+)\.tar\.xz$/\1/' \
+        | sort -Vr \
+        | head -n 1
+    )"
+    if test -z "${VERSION}"; then
+        echo "Failed to fetch latest tag and extract version from GitHub"
+        exit 1
+    fi
+    echo "Got version <${VERSION}>"
+
+    echo "version=${VERSION}" >>variables.env
+  artifacts:
+    reports:
+      dotenv: variables.env
+
+libgmp-release:
+  needs:
+  - libgmp-check
+  image: registry.gitlab.com/gitlab-org/release-cli:v0.19.0
+  script:
+  - |
+    echo "### Releasing libgmp v${VERSION}"
+    if release-cli get --tag-name libgmp/${VERSION}; then
+        echo "    Already exists"
+        exit 0
+
+    else
+        release-cli create \
+            --name "libgmp v${VERSION}" \
+              --description "Custom release of libgmp v${VERSION}" \
+              --tag-name "libgmp/${VERSION}" \
+              --ref "${CI_COMMIT_SHA}"
+    fi
