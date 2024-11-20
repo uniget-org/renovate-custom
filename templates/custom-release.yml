@@ -20,6 +20,7 @@ $[[ inputs.name ]]-check:
   - apt-get install -y $[[ inputs.prerequisites ]]
   script:
   - |
+    set -e -x
     VERSION="$(
         $[[ inputs.command ]]
     )"
