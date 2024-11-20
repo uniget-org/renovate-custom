@@ -3,6 +3,9 @@ spec:
     name:
       type: string
       description: The name of the tool
+    prerequisites:
+      type: string
+      description: The prerequisites to build the tool (space separated ubuntu packages)
     command:
       type: string
       description: The command to determine the version of the tool (duplicate all backslashes)
@@ -11,6 +14,9 @@ $[[ inputs.name ]]-check:
   rules:
   - if: $SCHEDULED_PIPELINE == "true"
   image: registry.gitlab.com/uniget-org/images/ubuntu:rolling
+  before_script:
+  - apt-get update
+  - apt-get install -y $[[ inputs.prerequisites ]]
   script:
   - |
     VERSION="$(

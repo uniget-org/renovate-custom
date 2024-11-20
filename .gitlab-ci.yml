@@ -35,6 +35,7 @@ include:
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
     name: libgmp
+    prerequisites: libxml2-utils
     command: |
       curl -sSLf https://ftp.gnu.org/gnu/gmp/ \
       | xmllint -html --xpath "//a/@href" - \
