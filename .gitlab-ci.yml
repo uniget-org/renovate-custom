@@ -1,6 +1,7 @@
 workflow:
   rules:
   - if: $CI_PIPELINE_SOURCE == "push"
+  - if: $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULED_PIPELINE == "true"
 
 docker-desktop:
   rules:
