@@ -8,6 +8,10 @@ include:
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
     name: docker-desktop
+    rules:
+    - changes:
+      - docker-desktop.yaml
+    - if: $SCHEDULED_PIPELINE == "true"
     command: |
       curl --silent --show-error --location --fail \
           "https://github.com/docker/docs/raw/main/content/manuals/desktop/release-notes.md" \
