@@ -22,7 +22,7 @@ python-3.12-check:
     fi
     echo "Got version <${VERSION}>"
 
-    echo "version=${VERSION}.${INDYGREG_PYTHON_BUILD_STANDALONE_VERSION}" >>variables.env
+    echo "VERSION=${VERSION}.${INDYGREG_PYTHON_BUILD_STANDALONE_VERSION}" >>variables.env
   artifacts:
     reports:
       dotenv: variables.env

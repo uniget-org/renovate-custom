@@ -19,7 +19,7 @@ passage-check:
     
     echo "Got version <${VERSION}.${COMMIT}>"
 
-    echo "version=${VERSION}.${COMMIT}" >>variables.env
+    echo "VERSION=${VERSION}.${COMMIT}" >>variables.env
   artifacts:
     reports:
       dotenv: variables.env

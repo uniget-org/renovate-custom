@@ -24,7 +24,7 @@ nodejs-lts-check:
     fi
     echo "### Found LTS version ${VERSION}"
 
-    echo "version=${VERSION}" >>variables.env
+    echo "VERSION=${VERSION}" >>variables.env
   artifacts:
     reports:
       dotenv: variables.env
