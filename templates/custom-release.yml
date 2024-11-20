@@ -20,6 +20,7 @@ $[[ inputs.name ]]-check:
   script:
   - |
     set -e -x
+    $[[ inputs.command ]]
     VERSION="$(
         $[[ inputs.command ]]
     )"
