@@ -19,6 +19,7 @@ $[[ inputs.name ]]-check:
   image: registry.gitlab.com/uniget-org/images/ubuntu:rolling
   script:
   - |
+    set -e -x
     VERSION="$(
         $[[ inputs.command ]]
     )"
