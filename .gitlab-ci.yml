@@ -1,26 +1,93 @@
-#include:
-#- project: uniget-org/templates
-#  file: uniget.yaml
-#  ref: main
-#- local: docker-desktop.yaml
-#- local: k3s.yaml
-#- local: libgmp.yaml
-#- local: namespace.yaml
-#- local: nodejs-lts.yaml
-#- local: openjdk.yaml
-#- local: passage.yaml
-#- local: python.yaml
-#- local: python-3.12.yaml
-#- local: rke2.yaml
-
 workflow:
   rules:
   - if: $CI_PIPELINE_SOURCE == "push"
+
+docker-desktop:
+  rules:
+  - changes:
+    - docker-desktop.yaml
+  - if: $SCHEDULED_PIPELINE == "true"
+  trigger:
+    include:
+    - local: docker-desktop.yaml
+
+docker-desktop:
+  rules:
+  - changes:
+    - docker-desktop.yaml
+  - if: $SCHEDULED_PIPELINE == "true"
+  trigger:
+    include:
+    - local: docker-desktop.yaml
+
+libgmp:
+  rules:
+  - changes:
+    - libgmp.yaml
+  - if: $SCHEDULED_PIPELINE == "true"
+  trigger:
+    include:
+    - local: libgmp.yaml
+
+namespace:
+  rules:
+  - changes:
+    - namespace.yaml
+  - if: $SCHEDULED_PIPELINE == "true"
+  trigger:
+    include:
+    - local: namespace.yaml
+
+nodejs-lts:
+  rules:
+  - changes:
+    - nodejs-lts.yaml
+  - if: $SCHEDULED_PIPELINE == "true"
+  trigger:
+    include:
+    - local: nodejs-lts.yaml
+
+openjdk:
+  rules:
+  - changes:
+    - openjdk.yaml
+  - if: $SCHEDULED_PIPELINE == "true"
+  trigger:
+    include:
+    - local: openjdk.yaml
 
 passage:
   rules:
   - changes:
     - passage.yaml
+  - if: $SCHEDULED_PIPELINE == "true"
   trigger:
     include:
     - local: passage.yaml
+
+python:
+  rules:
+  - changes:
+    - python.yaml
+  - if: $SCHEDULED_PIPELINE == "true"
+  trigger:
+    include:
+    - local: python.yaml
+
+python-3.12:
+  rules:
+  - changes:
+    - python-3.12.yaml
+  - if: $SCHEDULED_PIPELINE == "true"
+  trigger:
+    include:
+    - local: python-3.12.yaml
+
+rke2:
+  rules:
+  - changes:
+    - rke2.yaml
+  - if: $SCHEDULED_PIPELINE == "true"
+  trigger:
+    include:
+    - local: rke2.yaml
