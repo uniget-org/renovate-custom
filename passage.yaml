@@ -3,15 +3,14 @@ passage-check:
   script:
   - |
     git clone https://github.com/FiloSottile/passage
-    cd passage
 
-    VERSION="$(git rev-list --count --all)"
+    VERSION="$(git -C passage rev-list --count --all)"
     if test -z "${VERSION}"; then
         echo "Failed to count commits"
         exit 1
     fi
 
-    COMMIT="$(git rev-parse --short HEAD)"
+    COMMIT="$(git -C passage rev-parse --short HEAD)"
     if test -z "${COMMIT}"; then
         echo "Failed to get short commit hash"
         exit 1
@@ -19,7 +18,7 @@ passage-check:
     
     echo "Got version <${VERSION}.${COMMIT}>"
 
-    echo "VERSION=${VERSION}-${COMMIT}" >>variables.env
+    echo "VERSION=${VERSION}.${COMMIT}" >>variables.env
   artifacts:
     reports:
       dotenv: variables.env
