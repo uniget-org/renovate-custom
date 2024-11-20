@@ -2,8 +2,8 @@ libgmp-check:
   image: registry.gitlab.com/uniget-org/images/ubuntu:rolling
   before_script:
   - |
-    sudo apt-get update
-    sudo apt-get -y install \
+    apt-get update
+    apt-get -y install \
         libxml2-utils
   script:
   - |

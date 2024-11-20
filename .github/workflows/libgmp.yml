@@ -35,8 +35,8 @@ jobs:
 
     - name: Prepare
       run: |
-        apt-get update
-        apt-get -y install \
+        sudo apt-get update
+        sudo apt-get -y install \
             libxml2-utils
 
     - name: Fetch
