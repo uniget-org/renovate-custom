@@ -8,10 +8,6 @@ include:
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
     name: docker-desktop
-    rules:
-    - changes:
-      - docker-desktop.yaml
-    - if: $SCHEDULED_PIPELINE == "true"
     command: |
       curl --silent --show-error --location --fail \
           "https://github.com/docker/docs/raw/main/content/manuals/desktop/release-notes.md" \
@@ -19,83 +15,99 @@ include:
       | head -n 1 \
       | sed -E 's/^.+version="([^"]+)".+$/\\1/'
 
-docker-desktop:
-  rules:
-  - changes:
-    - docker-desktop.yaml
-  - if: $SCHEDULED_PIPELINE == "true"
-  trigger:
-    include:
-    - local: docker-desktop.yaml
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
+    name: k3s
+    command: |
+      curl --silent --show-error --location --fail \
+          --url "https://api.github.com/repos/k3s-io/k3s/releases/latest" \
+      | jq --raw-output '.tag_name' \
+      | sed -E 's/^v([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+)\\+k3s([[:digit:]]+)$/\\1.\\2/'
 
-libgmp:
-  rules:
-  - changes:
-    - libgmp.yaml
-  - if: $SCHEDULED_PIPELINE == "true"
-  trigger:
-    include:
-    - local: libgmp.yaml
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
+    name: namespace
+    command: |
+      curl --silent --show-error --location --fail https://github.com/namespacelabs/homebrew-namespace/raw/main/nsc.rb \
+      | grep version \
+      | cut -d'"' -f2
 
-namespace:
-  rules:
-  - changes:
-    - namespace.yaml
-  - if: $SCHEDULED_PIPELINE == "true"
-  trigger:
-    include:
-    - local: namespace.yaml
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
+    name: libgmp
+    command: |
+      curl -sSLf https://ftp.gnu.org/gnu/gmp/ \
+      | xmllint -html --xpath "//a/@href" - \
+      | cut -d= -f2 \
+      | tr -d '"' \
+      | grep '.xz$' \
+      | sed -E 's/^gmp-(.+)\\.tar\\.xz$/\\1/' \
+      | sort -Vr \
+      | head -n 1
 
-nodejs-lts:
-  rules:
-  - changes:
-    - nodejs-lts.yaml
-  - if: $SCHEDULED_PIPELINE == "true"
-  trigger:
-    include:
-    - local: nodejs-lts.yaml
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
+    name: nodejs-lts
+    command: |
+      curl --silent --location --fail https://github.com/nodejs/Release/raw/main/schedule.json \
+      | jq -r 'to_entries[] | select(.value.maintenance > (now | todate)) | select(.value.lts != null) | select(.value.lts < (now | todate)) | .key' \
+      | xargs -I{} \
+          git ls-remote https://github.com/nodejs/node "refs/tags/{}.*" \
+      | grep -v '\\^{}' \
+      | cut -f2 | cut -d/ -f3 | tr -d v \
+      | sort -Vr | head -1
 
-openjdk:
-  rules:
-  - changes:
-    - openjdk.yaml
-  - if: $SCHEDULED_PIPELINE == "true"
-  trigger:
-    include:
-    - local: openjdk.yaml
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
+    name: openjdk
+    command: |
+      curl --silent --show-error --location --fail \
+          --url "https://api.adoptium.net/v3/info/available_releases"           \
+      | jq --raw-output '.available_releases | max' \
+      | xargs -I{} \
+          curl --silent --show-error --location --fail \
+              --url "https://api.github.com/repos/adoptium/temurin{}-binaries/releases/latest" \                         | jq --raw-output '.tag_name' \
+      | sed 's/^jdk-//' \
+      | sed -E 's/^([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+)\\+([[:digit:]]+)$/\\1-\\2/'
 
-passage:
-  rules:
-  - changes:
-    - passage.yaml
-  - if: $SCHEDULED_PIPELINE == "true"
-  trigger:
-    include:
-    - local: passage.yaml
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
+    name: passage
+    command: |
+      git clone --quiet https://github.com/FiloSottile/passage
+      echo "$(git -C passage rev-list --count --all).$(git -C passage rev-parse --short HEAD)"
 
-python:
-  rules:
-  - changes:
-    - python.yaml
-  - if: $SCHEDULED_PIPELINE == "true"
-  trigger:
-    include:
-    - local: python.yaml
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
+    name: python-3.12
+    command: |
+      curl --silent --show-error --location --fail \
+          --url "https://api.github.com/repos/indygreg/python-build-standalone/releases/tags/${INDYGREG_PYTHON_BUILD_STANDALONE_VERSION}" \
+      | jq --raw-output '.assets[].name' \
+      | grep -E -- '-x86_64-unknown-linux-musl-install_only.tar.gz$' \
+      | sed -E 's/^cpython-([^+]+)\\+.+$/\\1/' \
+      | grep -P '^3\\.12\\.\\d+$' \
+      | sort -Vr \
+      | head -n 1
 
-python-3.12:
-  rules:
-  - changes:
-    - python-3.12.yaml
-  - if: $SCHEDULED_PIPELINE == "true"
-  trigger:
-    include:
-    - local: python-3.12.yaml
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
+    name: python
+    command: |
+      curl --silent --show-error --location --fail \
+          --url "https://api.github.com/repos/indygreg/python-build-standalone/releases/tags/${INDYGREG_PYTHON_BUILD_STANDALONE_VERSION}" \
+      | jq --raw-output '.assets[].name' \
+      | grep -E -- '-x86_64-unknown-linux-musl-install_only.tar.gz$' \
+      | sed -E 's/^cpython-([^+]+)\\+.+$/\\1/' \
+      | grep -P '^\\d+\\.\\d+\\.\\d+$' \
+      | sort -Vr \
+      | head -n 1
 
-rke2:
-  rules:
-  - changes:
-    - rke2.yaml
-  - if: $SCHEDULED_PIPELINE == "true"
-  trigger:
-    include:
-    - local: rke2.yaml
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
+    name: rke2
+    command: |
+      curl --silent --show-error --location --fail \
+          --url "https://api.github.com/repos/rancher/rke2/releases/latest" \
+      | jq --raw-output '.tag_name' \
+      | sed -E 's/^v([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+)\\+rke2r([[:digit:]]+)$/\\1.\\2/'

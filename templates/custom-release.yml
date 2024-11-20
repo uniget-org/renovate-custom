@@ -5,22 +5,14 @@ spec:
       description: The name of the tool
     command:
       type: string
-      description: The command to determine the version of the tool
-    rules:
-      type: array
-      description: The rules to trigger the pipeline
+      description: The command to determine the version of the tool (duplicate all backslashes)
 ---
-.$[[ inputs.name ]]-rules:
-  rules: $[[ inputs.rules ]]
-
 $[[ inputs.name ]]-check:
-  extends:
-  - .$[[ inputs.name ]]-rules
+  rules:
+  - if: $SCHEDULED_PIPELINE == "true"
   image: registry.gitlab.com/uniget-org/images/ubuntu:rolling
   script:
   - |
-    set -e -x
-    $[[ inputs.command ]]
     VERSION="$(
         $[[ inputs.command ]]
     )"
@@ -36,8 +28,8 @@ $[[ inputs.name ]]-check:
       dotenv: variables.env
 
 $[[ inputs.name ]]-release:
-  extends:
-  - .$[[ inputs.name ]]-rules
+  rules:
+  - if: $SCHEDULED_PIPELINE == "true"
   needs:
   - $[[ inputs.name ]]-check
   image: registry.gitlab.com/gitlab-org/release-cli:v0.19.0
