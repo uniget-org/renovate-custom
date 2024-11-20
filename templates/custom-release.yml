@@ -6,6 +6,7 @@ spec:
     prerequisites:
       type: string
       description: The prerequisites to build the tool (space separated ubuntu packages)
+      default: ""
     command:
       type: string
       description: The command to determine the version of the tool (duplicate all backslashes)
