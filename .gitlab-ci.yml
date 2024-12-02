@@ -88,7 +88,7 @@ include:
       | jq --raw-output '.assets[].name' \
       | grep -E -- '-x86_64-unknown-linux-musl-install_only.tar.gz$' \
       | sed -E 's/^cpython-([^-]+)-.+$/\\1/' \
-      | grep -P '^3\\.12\\.\\d+$' \
+      | grep -P '^3\\.12\\.' \
       | sort -Vr \
       | head -n 1
 
