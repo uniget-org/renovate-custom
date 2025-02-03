@@ -14,7 +14,6 @@ include:
       | head -n 1 \
       | sed -E 's/^.+version="([^"]+)".+$/\\1/'
 
-include:
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
     name: floodgate
@@ -25,7 +24,6 @@ include:
           curl -sSLf https://download.geysermc.org/v2/projects/floodgate/versions/{}/builds \
       | jq --raw-output '"\(.version).\(.builds | map(select(.channel == "default")) | .[-1].build)"'
 
-include:
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
     name: geyser
@@ -151,6 +149,16 @@ include:
           --url "https://api.github.com/repos/rancher/rke2/releases/latest" \
       | jq --raw-output '.tag_name' \
       | sed -E 's/^v([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+)\\+rke2r([[:digit:]]+)$/\\1.\\2/'
+
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
+    name: texlive
+    command: |
+      curl -sSLf https://texlive.info/historic/systems/texlive \
+      | xq --xpath '//a@href' \
+      | grep -E '^[0-9]' \
+      | cut -d/ -f1 \
+      | tail -n 1
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
