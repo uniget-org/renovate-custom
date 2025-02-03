@@ -153,6 +153,8 @@ include:
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
     name: texlive
+    prerequisites:
+    - xq
     command: |
       curl -sSLf https://texlive.info/historic/systems/texlive \
       | xq --xpath '//a@href' \
