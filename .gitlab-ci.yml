@@ -154,15 +154,11 @@ include:
   inputs:
     name: texlive
     prerequisites: xq
-    test: |
-      curl --silent --show-error --location --fail \
-          --url https://texlive.info/historic/systems/texlive \
-      | xq --xpath '//a@href'
     command: |
       curl --silent --show-error --location --fail \
           --url https://texlive.info/historic/systems/texlive \
-      | xq --xpath '//a@href' \
-      | grep -E '^[0-9]' \
+      | grep 'href="[0-9]' \
+      | sed -E 's/^.+<a href="([^"]+)".+$/\1/' \
       | cut -d/ -f1 \
       | tail -n 1
 
