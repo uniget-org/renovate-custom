@@ -158,7 +158,7 @@ include:
       curl --silent --show-error --location --fail \
           --url https://texlive.info/historic/systems/texlive \
       | grep 'href="[0-9]' \
-      | sed -E 's/^.+<a href="([^"]+)".+$/\1/' \
+      | sed -E 's/^.+<a href="([^"]+)".+$/\\1/' \
       | cut -d/ -f1 \
       | tail -n 1
 

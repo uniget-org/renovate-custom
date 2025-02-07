@@ -36,7 +36,7 @@ $[[ inputs.name ]]-check:
         $[[ inputs.command ]]
     )"
     if test -z "${VERSION}"; then
-        echo "Failed to fetch latest tag and extract version from GitHub"
+        echo "Failed to fetch latest tag and extract version"
         exit 1
     fi
     echo "Got version <${VERSION}>"
