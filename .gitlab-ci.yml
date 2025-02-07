@@ -155,7 +155,7 @@ include:
     name: texlive
     prerequisites: xq
     test: |
-      curl --silent --verbose --show-error --location --fail \
+      curl --silent --show-error --location --fail \
           --url https://texlive.info/historic/systems/texlive \
       | xq --xpath '//a@href'
     command: |
