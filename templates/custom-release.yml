@@ -7,6 +7,9 @@ spec:
       type: string
       description: The prerequisites to build the tool (space separated ubuntu packages)
       default: ""
+    test:
+      type: string
+      description: Run some commands to test the commands below
     command:
       type: string
       description: The command to determine the version of the tool (duplicate all backslashes)
@@ -21,6 +24,13 @@ $[[ inputs.name ]]-check:
   script:
   - |
     set -e -x
+
+    echo "###################################################################"
+    echo "### Testing"
+    $[[ inputs.test ]]
+
+    echo "###################################################################"
+    echo "### Checking $[[ inputs.name ]] version"
     VERSION="$(
         $[[ inputs.command ]]
     )"
