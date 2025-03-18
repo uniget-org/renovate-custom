@@ -67,6 +67,23 @@ include:
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
+    name: luckperms
+    command: |
+      LUCKPERMS_BUILD="$(
+          curl --silent --show-error --location --fail "https://ci.lucko.me/job/LuckPerms/api/json?pretty=true" \
+          | jq --raw-output '.builds[0].number'
+      )"
+      LUCKPERMS_VERSION="$(
+          curl -sSLf "https://ci.lucko.me/job/LuckPerms/${LUCKPERMS_BUILD}/api/json?pretty=true" \
+          | jq -r '.artifacts[] | select(.relativePath | contains("bukkit/")) | select(.relativePath | contains("-Bukkit-")) | .relativePath' \
+          | cut -d/ -f5 \
+          | cut -d- -f3 \
+          | cut -d. -f1-3
+      )"
+      echo "${LUCKPERMS_VERSION}-${LUCKPERMS_BUILD}"
+
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
     name: minecraft-server
     command: |
       curl -sSLf https://launchermeta.mojang.com/mc/game/version_manifest.json \
@@ -149,6 +166,22 @@ include:
           --url "https://api.github.com/repos/rancher/rke2/releases/latest" \
       | jq --raw-output '.tag_name' \
       | sed -E 's/^v([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+)\\+rke2r([[:digit:]]+)$/\\1.\\2/'
+
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
+    name: spark
+    command: |
+      SPARK_BUILD="$(
+          curl --silent --show-error --location --fail "https://ci.lucko.me/job/spark/api/json?pretty=true" \
+          | jq --raw-output '.builds[0].number'
+      )"
+      SPARK_VERSION="$(
+          curl -sSLf "https://ci.lucko.me/job/spark/${SPARK_BUILD}/api/json?pretty=true" \
+          | jq -r '.artifacts[] | select(.relativePath | endswith("-bukkit.jar")) | .relativePath' \
+          | cut -d/ -f4 \
+          | cut -d- -f2
+      )"
+      echo "${SPARK_VERSION}-${SPARK_BUILD}"
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
