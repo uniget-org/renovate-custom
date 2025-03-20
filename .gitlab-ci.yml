@@ -16,6 +16,117 @@ include:
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
+    name: docker-init
+    needs:
+    - docker-desktop-release
+    command: |
+      DD_VERSION="$(
+          curl -sSfH "Job-Token: ${CI_JOB_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/releases?per_page=100" \
+          | jq -r '.[].tag_name' \
+          | grep ^docker-desktop/ \
+          | head -n 1 \
+          | cut -d/ -f2
+      )"
+      curl -sLf https://github.com/uniget-org/cli/releases/latest/download/uniget_Linux_$(uname -m).tar.gz \
+      | tar -xzC /usr/local/bin uniget
+      uniget install docker-init
+      docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-init.sh .
+      VERSION="$(
+          ./libexec/docker/cli-plugins/docker-init init --version \
+          | grep ^Version \
+          | cut -dv -f2
+      )"
+      if test -z "${VERSION}"; then
+          echo "Unable to get version" >&2
+          exit 1
+      fi
+      echo "${VERSION}"
+
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
+    name: docker-debug
+    needs:
+    - docker-desktop-release
+    command: |
+      DD_VERSION="$(
+          curl -sSfH "Job-Token: ${CI_JOB_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/releases?per_page=100" \
+          | jq -r '.[].tag_name' \
+          | grep ^docker-desktop/ \
+          | head -n 1 \
+          | cut -d/ -f2
+      )"
+      curl -sLf https://github.com/uniget-org/cli/releases/latest/download/uniget_Linux_$(uname -m).tar.gz \
+      | tar -xzC /usr/local/bin uniget
+      uniget install docker-debug
+      docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-debug.sh .
+      VERSION="$(
+          ./libexec/docker/cli-plugins/docker-debug debug --version \
+          | grep ^Version \
+          | cut -d' ' -f2
+      )"
+      if test -z "${VERSION}"; then
+          echo "Unable to get version" >&2
+          exit 1
+      fi
+      echo "${VERSION}"
+
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
+    name: docker-dev
+    needs:
+    - docker-desktop-release
+    command: |
+      DD_VERSION="$(
+          curl -sSfH "Job-Token: ${CI_JOB_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/releases?per_page=100" \
+          | jq -r '.[].tag_name' \
+          | grep ^docker-desktop/ \
+          | head -n 1 \
+          | cut -d/ -f2
+      )"
+      curl -sLf https://github.com/uniget-org/cli/releases/latest/download/uniget_Linux_$(uname -m).tar.gz \
+      | tar -xzC /usr/local/bin uniget
+      uniget install docker-dev
+      docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-dev.sh .
+      VERSION="$(
+          ./libexec/docker/cli-plugins/docker-dev dev version \
+          | grep ^Version \
+          | cut -dv -f2
+      )"
+      if test -z "${VERSION}"; then
+          echo "Unable to get version" >&2
+          exit 1
+      fi
+      echo "${VERSION}"
+
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
+    name: docker-ai
+    needs:
+    - docker-desktop-release
+    command: |
+      DD_VERSION="$(
+          curl -sSfH "Job-Token: ${CI_JOB_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/releases?per_page=100" \
+          | jq -r '.[].tag_name' \
+          | grep ^docker-desktop/ \
+          | head -n 1 \
+          | cut -d/ -f2
+      )"
+      curl -sLf https://github.com/uniget-org/cli/releases/latest/download/uniget_Linux_$(uname -m).tar.gz \
+      | tar -xzC /usr/local/bin uniget
+      uniget install docker-ai
+      docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-ai.sh .
+      VERSION="$(
+          ./libexec/docker/cli-plugins/docker-ai ai --version \
+          | tr -d v
+      )"
+      if test -z "${VERSION}"; then
+          echo "Unable to get version" >&2
+          exit 1
+      fi
+      echo "${VERSION}"
+
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
     name: floodgate
     command: |
       curl -sSLf https://download.geysermc.org/v2/projects/floodgate \
