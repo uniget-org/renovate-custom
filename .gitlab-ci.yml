@@ -20,6 +20,7 @@ include:
     needs:
     - docker-desktop-release
     command: |
+      printenv | sort >&2
       DD_VERSION="$(
           curl -sSfH "Job-Token: ${CI_JOB_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/releases?per_page=100" \
           | jq -r '.[].tag_name' \
@@ -29,7 +30,7 @@ include:
       )"
       curl -sLf https://github.com/uniget-org/cli/releases/latest/download/uniget_Linux_$(uname -m).tar.gz \
       | tar -xzC /usr/local/bin uniget
-      uniget install docker-init
+      uniget install docker-init >&2
       docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-init.sh .
       VERSION="$(
           ./libexec/docker/cli-plugins/docker-init init --version \
