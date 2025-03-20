@@ -40,7 +40,7 @@ include:
           echo "Unable to get version" >&2
           exit 1
       fi
-      echo "${VERSION}"
+      echo "${VERSION}-${DD_VERSION}"
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
@@ -68,7 +68,7 @@ include:
           echo "Unable to get version" >&2
           exit 1
       fi
-      echo "${VERSION}"
+      echo "${VERSION}-${DD_VERSION}"
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
@@ -96,7 +96,7 @@ include:
           echo "Unable to get version" >&2
           exit 1
       fi
-      echo "${VERSION}"
+      echo "${VERSION}-${DD_VERSION}"
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
@@ -123,7 +123,7 @@ include:
           echo "Unable to get version" >&2
           exit 1
       fi
-      echo "${VERSION}"
+      echo "${VERSION}-${DD_VERSION}"
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
