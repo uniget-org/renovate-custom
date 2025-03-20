@@ -28,7 +28,7 @@ include:
           | cut -d/ -f2
       )"
       curl -sLf https://github.com/uniget-org/cli/releases/latest/download/uniget_Linux_$(uname -m).tar.gz \
-      | tar -xzC /usr/local/bin uniget
+      | tar -xzC /usr/local/bin uniget >&2
       uniget --prefix=helper install docker-init >&2
       find . -type f -executable
       docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-init.sh . >&2
