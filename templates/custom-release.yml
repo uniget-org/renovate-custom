@@ -3,6 +3,9 @@ spec:
     name:
       type: string
       description: The name of the tool
+    needs:
+      type: array
+      default: []
     prerequisites:
       type: string
       description: The prerequisites to build the tool (space separated ubuntu packages)
@@ -18,6 +21,7 @@ spec:
 $[[ inputs.name ]]-check:
   rules:
   - if: $SCHEDULED_PIPELINE == "true"
+  needs: $[[ inputs.needs ]]
   image: registry.gitlab.com/uniget-org/images/ubuntu:rolling
   before_script:
   - apt-get update
