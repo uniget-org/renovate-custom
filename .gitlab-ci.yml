@@ -31,7 +31,7 @@ include:
       | tar -xzC /usr/local/bin uniget
       uniget --prefix=helper install docker-init >&2
       find . -type f -executable
-      docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-init.sh .
+      docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-init.sh . >&2
       VERSION="$(
           ./libexec/docker/cli-plugins/docker-init init --version \
           | grep ^Version \
