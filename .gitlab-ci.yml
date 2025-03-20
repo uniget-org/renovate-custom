@@ -56,9 +56,9 @@ include:
           | cut -d/ -f2
       )"
       curl -sLf https://github.com/uniget-org/cli/releases/latest/download/uniget_Linux_$(uname -m).tar.gz \
-      | tar -xzC /usr/local/bin uniget
-      uniget install docker-debug
-      docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-debug.sh .
+      | tar -xzC /usr/local/bin uniget >&2
+      uniget --prefix=helper install docker-debug >&2
+      docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-debug.sh . >&2
       VERSION="$(
           ./libexec/docker/cli-plugins/docker-debug debug --version \
           | grep ^Version \
@@ -84,9 +84,9 @@ include:
           | cut -d/ -f2
       )"
       curl -sLf https://github.com/uniget-org/cli/releases/latest/download/uniget_Linux_$(uname -m).tar.gz \
-      | tar -xzC /usr/local/bin uniget
-      uniget install docker-dev
-      docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-dev.sh .
+      | tar -xzC /usr/local/bin uniget >&2
+      uniget --prefix=helper install docker-dev >&2
+      docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-dev.sh . >&2
       VERSION="$(
           ./libexec/docker/cli-plugins/docker-dev dev version \
           | grep ^Version \
@@ -112,9 +112,9 @@ include:
           | cut -d/ -f2
       )"
       curl -sLf https://github.com/uniget-org/cli/releases/latest/download/uniget_Linux_$(uname -m).tar.gz \
-      | tar -xzC /usr/local/bin uniget
-      uniget install docker-ai
-      docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-ai.sh .
+      | tar -xzC /usr/local/bin uniget >&2
+      uniget --prefix=helper install docker-ai >&2
+      docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-ai.sh . >&2
       VERSION="$(
           ./libexec/docker/cli-plugins/docker-ai ai --version \
           | tr -d v
