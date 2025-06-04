@@ -264,7 +264,7 @@ include:
           --url "https://api.github.com/repos/indygreg/python-build-standalone/releases/latest" \
       | jq --raw-output '.assets[].name' \
       | grep -E -- '-x86_64-unknown-linux-musl-install_only.tar.gz$' \
-      | grep -E '^cpython-[0-9]+\.[0-9]+\.[0-9]+\+' \
+      | grep -E '^cpython-[0-9]+\\.[0-9]+\\.[0-9]+\\+' \
       | sed -E 's/^cpython-([^-]+)-.+$/\\1/' \
       | tr '+' '.' \
       | sort -Vr \
