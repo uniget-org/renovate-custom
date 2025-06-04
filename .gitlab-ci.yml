@@ -7,12 +7,11 @@ include:
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
     name: docker-desktop
+    prerequisites: xq
     command: |
-      curl --silent --show-error --location --fail \
-          "https://github.com/docker/docs/raw/main/content/manuals/desktop/release-notes.md" \
-      | grep '{{< desktop-install-v2 all=true' \
-      | head -n 1 \
-      | sed -E 's/^.+version="([^"]+)".+$/\\1/'
+      curl -sSf https://desktop.docker.com/linux/main/amd64/appcast.xml \
+      | xq --json \
+      | jq --raw-output '.rss.channel.item.enclosure | "\(."@shortVersionString").\(."@version")"'
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
@@ -265,6 +264,7 @@ include:
           --url "https://api.github.com/repos/indygreg/python-build-standalone/releases/latest" \
       | jq --raw-output '.assets[].name' \
       | grep -E -- '-x86_64-unknown-linux-musl-install_only.tar.gz$' \
+      | grep -E '^cpython-[0-9]+\.[0-9]+\.[0-9]+\+' \
       | sed -E 's/^cpython-([^-]+)-.+$/\\1/' \
       | tr '+' '.' \
       | sort -Vr \
