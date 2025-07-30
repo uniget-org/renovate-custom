@@ -71,34 +71,6 @@ include:
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
-    name: docker-dev
-    needs:
-    - docker-desktop-release
-    command: |
-      DD_VERSION="$(
-          curl -sSfH "Job-Token: ${CI_JOB_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/releases?per_page=100" \
-          | jq -r '.[].tag_name' \
-          | grep ^docker-desktop/ \
-          | head -n 1 \
-          | cut -d/ -f2
-      )"
-      curl -sLf https://github.com/uniget-org/cli/releases/latest/download/uniget_Linux_$(uname -m).tar.gz \
-      | tar -xzC /usr/local/bin uniget >&2
-      uniget --prefix=helper install docker-dev >&2
-      docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-dev.sh . >&2
-      VERSION="$(
-          ./libexec/docker/cli-plugins/docker-dev dev version \
-          | grep ^Version \
-          | cut -dv -f2
-      )"
-      if test -z "${VERSION}"; then
-          echo "Unable to get version" >&2
-          exit 1
-      fi
-      echo "${VERSION}-${DD_VERSION}"
-
-- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
-  inputs:
     name: docker-ai
     needs:
     - docker-desktop-release
