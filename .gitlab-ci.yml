@@ -212,7 +212,7 @@ include:
       | jq --raw-output '.version_groups[-1]' \
       | xargs -I{} \
           curl --silent --show-error --location --fail "https://api.papermc.io/v2/projects/paper/version_group/{}/builds" \
-      | jq --raw-output '.builds | map(select(.channel == "default")) | .[-1] | "\(.version)-\(.build)"'
+      | jq --raw-output '. as $root | $root.builds | map(select((.channel == "default") and (.version == $root.versions[-1]))) | sort_by(.build) | .[-1] | "\(.version)-\(.build)"'
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
