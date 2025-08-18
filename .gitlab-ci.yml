@@ -11,7 +11,9 @@ include:
     command: |
       curl -sSf https://desktop.docker.com/linux/main/amd64/appcast.xml \
       | xq --json \
-      | jq --raw-output '.rss.channel.item.enclosure | "\(."@shortVersionString").\(."@version")"'
+      | jq --raw-output '.rss.channel.item[].enclosure | "\(."@shortVersionString").\(."@version")"' \
+      | sort -n -r \
+      | head -n 1
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
