@@ -6,6 +6,28 @@ workflow:
 include:
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
+    name: curl
+    prerequisites: jq
+    command: |
+      curl -sSf https://api.github.com/repos/curl/curl/releases \
+      | jq --raw-output '.[].tag_name' \
+      | cut -d- -f2- \
+      | tr '_' '.' \
+      | head -n 1
+
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
+    name: davfs2
+    prerequisites: jq
+    command: |
+      curl -sSf https://api.github.com/repos/alisarctl/davfs2/releases \
+      | jq --raw-output '.[].tag_name' \
+      | cut -d- -f2- \
+      | tr '-' '.' \
+      | head -n 1
+
+- component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
+  inputs:
     name: docker-desktop
     prerequisites: xq
     command: |
