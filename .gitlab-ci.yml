@@ -50,7 +50,7 @@ include:
           | head -n 1 \
           | cut -d/ -f2
       )"
-      curl -sLf https://github.com/uniget-org/cli/releases/latest/download/uniget_Linux_$(uname -m).tar.gz \
+      curl -sLf https://gitlab.com/uniget-org/cli/-/releases/permalink/latest/downloads/uniget_Linux_$(uname -m).tar.gz \
       | tar -xzC /usr/local/bin uniget >&2
       uniget --prefix=helper install docker-init >&2
       docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-init.sh . >&2
@@ -78,7 +78,7 @@ include:
           | head -n 1 \
           | cut -d/ -f2
       )"
-      curl -sLf https://github.com/uniget-org/cli/releases/latest/download/uniget_Linux_$(uname -m).tar.gz \
+      curl -sLf https://gitlab.com/uniget-org/cli/-/releases/permalink/latest/downloads/uniget_Linux_$(uname -m).tar.gz \
       | tar -xzC /usr/local/bin uniget >&2
       uniget --prefix=helper install docker-debug >&2
       docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-debug.sh . >&2
@@ -106,7 +106,7 @@ include:
           | head -n 1 \
           | cut -d/ -f2
       )"
-      curl -sLf https://github.com/uniget-org/cli/releases/latest/download/uniget_Linux_$(uname -m).tar.gz \
+      curl -sLf https://gitlab.com/uniget-org/cli/-/releases/permalink/latest/downloads/uniget_Linux_$(uname -m).tar.gz \
       | tar -xzC /usr/local/bin uniget >&2
       uniget --prefix=helper install docker-ai >&2
       docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-ai.sh . >&2
