@@ -232,11 +232,14 @@ include:
   inputs:
     name: papermc
     command: |
-      curl --silent --show-error --location --fail "https://api.papermc.io/v2/projects/paper" \
-      | jq --raw-output '.version_groups[-1]' \
-      | xargs -I{} \
-          curl --silent --show-error --location --fail "https://api.papermc.io/v2/projects/paper/version_group/{}/builds" \
-      | jq --raw-output '. as $root | $root.builds | map(select((.channel == "default") and (.version == $root.versions[-1]))) | sort_by(.build) | .[-1] | "\(.version)-\(.build)"'
+      curl --silent --show-error --location --fail https://fill.papermc.io/v3/projects/paper/versions \
+      | jq -r '
+          [
+            .versions[] | 
+            select(.version.support.status == "SUPPORTED") ] | 
+            .[0] | 
+            "\(.version.id)-\(.builds[-1])"
+      '
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
