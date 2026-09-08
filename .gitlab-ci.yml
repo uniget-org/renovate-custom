@@ -148,7 +148,9 @@ include:
       curl --silent --show-error --location --fail \
           --url "https://api.github.com/repos/k3s-io/k3s/releases/latest" \
       | jq --raw-output '.tag_name' \
-      | sed -E 's/^v([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+)\\+k3s([[:digit:]]+)$/\\1.\\2/'
+      | while read -r TAG_NAME; do
+          echo "$( echo ${TAG_NAME} | tr -d v | cut -d+ -f1 ).$( echo ${TAG_NAME} | tr -d v | cut -d+ -f2 | cut -ds -f2 )"
+      done
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
