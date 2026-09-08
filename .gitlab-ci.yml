@@ -205,9 +205,12 @@ include:
       | jq -r 'to_entries[] | select(.value.maintenance > (now | todate)) | select(.value.lts != null) | select(.value.lts < (now | todate)) | .key' \
       | xargs -I{} \
           git ls-remote https://github.com/nodejs/node "refs/tags/{}.*" \
-      | grep -v '\\^{}' \
-      | cut -f2 | cut -d/ -f3 | tr -d v \
-      | sort -Vr | head -1
+      | grep -v '{}$' \
+      | cut -d' ' -f2 \
+      | cut -d/ -f3 \
+      | tr -d v \
+      | sort -V \
+      | tail -n 1
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
