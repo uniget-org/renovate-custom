@@ -167,7 +167,8 @@ include:
       | cut -d= -f2 \
       | tr -d '"' \
       | grep '.xz$' \
-      | sed -E 's/^gmp-(.+)\\.tar\\.xz$/\\1/' \
+      | cut -d- -f2 \
+      | cut -d. -f1-3 \
       | sort -Vr \
       | head -n 1
 
