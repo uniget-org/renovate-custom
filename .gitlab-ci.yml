@@ -254,11 +254,13 @@ include:
           --url "https://api.github.com/repos/indygreg/python-build-standalone/releases/latest" \
       | jq --raw-output '.assets[].name' \
       | grep -E -- '-x86_64-unknown-linux-musl-install_only.tar.gz$' \
-      | sed -E 's/^cpython-([^-]+)-.+$/\\1/' \
-      | grep -P '^3\\.12\\.' \
+      | cut -d- -f2 \
+      | cut -d+ -f1 \
+      | grep -v "rc" \
+      | grep "^3.12." \
       | tr '+' '.' \
-      | sort -Vr \
-      | head -n 1
+      | sort -V \
+      | tail -n 1
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
@@ -268,11 +270,12 @@ include:
           --url "https://api.github.com/repos/indygreg/python-build-standalone/releases/latest" \
       | jq --raw-output '.assets[].name' \
       | grep -E -- '-x86_64-unknown-linux-musl-install_only.tar.gz$' \
-      | grep -E '^cpython-[0-9]+\\.[0-9]+\\.[0-9]+\\+' \
-      | sed -E 's/^cpython-([^-]+)-.+$/\\1/' \
+      | cut -d- -f2 \
+      | cut -d+ -f1 \
+      | grep -v "rc" \
       | tr '+' '.' \
-      | sort -Vr \
-      | head -n 1
+      | sort -V \
+      | tail -n 1
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
@@ -307,9 +310,10 @@ include:
       curl --silent --show-error --location --fail \
           --url https://texlive.info/historic/systems/texlive \
       | grep 'href="[0-9]' \
-      | sed -E 's/^.+<a href="([^"]+)".+$/\\1/' \
-      | cut -d/ -f1 \
-      | tail -n 1
+      | tail -n 1 \
+      | cut -d'<' -f7 \
+      | cut -d'>' -f2 \
+      | tr -d /
 
 - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/custom-release@$CI_COMMIT_SHA
   inputs:
