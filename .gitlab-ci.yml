@@ -112,6 +112,7 @@ include:
       docker_desktop_version="${DD_VERSION}" bash -x -e ./helper/usr/local/bin/install-docker-ai.sh . >&2
       VERSION="$(
           ./libexec/docker/cli-plugins/docker-ai ai version \
+          | cut -d' ' -f1 \
           | tr -d v
       )"
       if test -z "${VERSION}"; then
