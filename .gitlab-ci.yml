@@ -256,11 +256,10 @@ include:
           --url "https://api.github.com/repos/indygreg/python-build-standalone/releases/latest" \
       | jq --raw-output '.assets[].name' \
       | grep -E -- '-x86_64-unknown-linux-musl-install_only.tar.gz$' \
+      | tr + . \
       | cut -d- -f2 \
-      | cut -d+ -f1 \
-      | grep -v "rc" \
+      | grep -v rc \
       | grep "^3.12." \
-      | tr '+' '.' \
       | sort -V \
       | tail -n 1
 
@@ -272,10 +271,9 @@ include:
           --url "https://api.github.com/repos/indygreg/python-build-standalone/releases/latest" \
       | jq --raw-output '.assets[].name' \
       | grep -E -- '-x86_64-unknown-linux-musl-install_only.tar.gz$' \
+      | tr + . \
       | cut -d- -f2 \
-      | cut -d+ -f1 \
-      | grep -v "rc" \
-      | tr '+' '.' \
+      | grep -v rc \
       | sort -V \
       | tail -n 1
 
